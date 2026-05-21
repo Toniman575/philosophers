@@ -6,11 +6,13 @@
 /*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 13:36:45 by asadik            #+#    #+#             */
-/*   Updated: 2026/05/19 14:24:24 by asadik           ###   ########.fr       */
+/*   Updated: 2026/05/21 14:21:11 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.h"
+#include <sys/time.h>
+#include <unistd.h>
 
 bool	read_arg(int argc, char **argv, t_state *state)
 {
@@ -20,21 +22,22 @@ bool	read_arg(int argc, char **argv, t_state *state)
 	if (check.type == ERROR)
 	{
 		ft_putstr_fd(check.value.error, 1);
+		ft_putchar_fd('\n', 1);
 		return (false);
 	}
-	else if(argc == 1)
+	else if (argc == 1)
 		state->philo_n = (unsigned int)check.value.n;
-	else if(argc == 2)
-		state->ttd = (unsigned int)check.value.n;
-	else if(argc == 3)
-		state->tte = (unsigned int)check.value.n;
-	else if(argc == 4)
-		state->tts = (unsigned int)check.value.n;
-	else if(argc == 5)
+	else if (argc == 2)
+		state->tt_die = (unsigned int)check.value.n;
+	else if (argc == 3)
+		state->tt_eat = (unsigned int)check.value.n;
+	else if (argc == 4)
+		state->tt_sleep = (unsigned int)check.value.n;
+	else if (argc == 5)
 		state->eat_n = check.value.n;
 	else
 	{
-		ft_putstr_fd("Wrong number of arguments.", 1);
+		ft_putstr_fd("Wrong number of arguments.\n", 1);
 		return (false);
 	}
 	return (true);
@@ -53,5 +56,6 @@ bool	init_state(int argc, char **argv, t_state *state)
 	}
 	if (argc == 5)
 		state->eat_n = -1;
+	gettimeofday(&state->timestamp, NULL);
 	return (true);
 }
