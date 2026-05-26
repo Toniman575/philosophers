@@ -1,5 +1,5 @@
 NAME =		philo
-SRCS =		ft_atoi.c ft_putchar_fd.c ft_putstr_fd.c init.c main.c
+SRCS =		ft_atoi.c init.c main.c
 OBJS =		$(SRCS:.c=.o)
 DEPS =		$(OBJS:.o=.d)
 
