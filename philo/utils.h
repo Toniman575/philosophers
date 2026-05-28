@@ -6,7 +6,7 @@
 /*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/14 19:04:55 by asadik            #+#    #+#             */
-/*   Updated: 2026/05/27 14:32:57 by asadik           ###   ########.fr       */
+/*   Updated: 2026/05/28 08:50:25 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,12 @@ typedef enum e_rtype
 {
 	ERROR,
 	INT,
-	STATE,
 }	t_rtype;
 
 typedef union u_rreturn
 {
 	char	*error;
 	int		n;
-	t_state	state;
 }	t_rreturn;
 
 typedef struct s_result
