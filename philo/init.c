@@ -6,16 +6,15 @@
 /*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 13:36:45 by asadik            #+#    #+#             */
-/*   Updated: 2026/05/27 14:33:59 by asadik           ###   ########.fr       */
+/*   Updated: 2026/05/29 12:01:22 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.h"
-#include <stdbool.h>
-#include <sys/time.h>
-#include <unistd.h>
 #include <pthread.h>
+#include <stdbool.h>
 #include <stdio.h>
+#include <unistd.h>
 
 bool	read_arg(int argn, char **argv, t_state *state)
 {
@@ -50,7 +49,9 @@ void	*foo(void *arg)
 	t_philosopher	*stuff;
 
 	stuff = (t_philosopher *)arg;
-	printf("Philospher %i is spawned", stuff->n);
+	if (stuff->n % 2 == 1)
+		usleep(stuff->state->tt_die / 2);
+	printf("Philo %i spawned.\n", stuff->n);
 	pthread_mutex_lock(&stuff->lock);
 	stuff->dead = true;
 	pthread_mutex_unlock(&stuff->lock);
@@ -64,17 +65,20 @@ bool	blubb(t_state *state)
 	i = 0;
 	while (i < state->philo_n)
 	{
+		pthread_mutex_init(&state->forks[i], NULL);
+		state->philosophers[i].n = i;
+		state->philosophers[i].state = state;
+		pthread_mutex_init(&state->philosophers[i].lock, NULL);
+		state->philosophers[i].ate_n = 0;
+		state->philosophers[i].dead = false;
+		state->philosophers[i].skip = false;
+		state->philosophers[i].action = Sleeping;
 		if (pthread_create(&state->philosophers[i].thread, NULL, foo,
 				(void *)&state->philosophers[i]) != 0)
 		{
 			printf("Error creating a thread.\n");
 			return (false);
 		}
-		state->philosophers[i].n = i;
-		state->philosophers[i].state = state;
-		pthread_mutex_init(&state->philosophers[i].lock, NULL);
-		state->philosophers[i].dead = false;
-		state->philosophers[i].skip = false;
 		i++;
 	}
 	return (true);
@@ -95,6 +99,6 @@ bool	init_state(int argc, char **argv, t_state *state)
 		state->eat_n = -1;
 	if (!blubb(state))
 		return (false);
-	gettimeofday(&state->timestamp, NULL);
+	gettimeofday(&state->start, NULL);
 	return (true);
 }

@@ -6,7 +6,7 @@
 /*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/14 19:04:48 by asadik            #+#    #+#             */
-/*   Updated: 2026/05/27 14:46:47 by asadik           ###   ########.fr       */
+/*   Updated: 2026/05/29 11:59:00 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,14 @@ void	bla(t_state *state, unsigned int i, bool *alive)
 		{
 			state->philosophers[i].skip = true;
 			pthread_join(state->philosophers[i].thread, NULL);
+			pthread_mutex_unlock(&state->philosophers[i].lock);
+			pthread_mutex_destroy(&state->philosophers[i].lock);
 		}
 		else
+		{
+			pthread_mutex_unlock(&state->philosophers[i].lock);
 			*alive = true;
-		pthread_mutex_unlock(&state->philosophers[i].lock);
-		pthread_mutex_destroy(&state->philosophers[i].lock);
+		}
 	}
 }
 
@@ -57,4 +60,5 @@ int	main(int argc, char **argv)
 		return (1);
 	if (!init_state(argc, argv, &state))
 		return (1);
+	monitor(&state);
 }

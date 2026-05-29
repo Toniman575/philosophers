@@ -6,13 +6,12 @@
 /*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/05 14:27:03 by asadik            #+#    #+#             */
-/*   Updated: 2026/05/26 11:06:58 by asadik           ###   ########.fr       */
+/*   Updated: 2026/05/28 09:12:21 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.h"
 #include <limits.h>
-#include <stdbool.h>
 
 static bool	overflow_check(int *negative, t_result *result, int digit)
 {
