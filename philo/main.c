@@ -6,12 +6,13 @@
 /*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/14 19:04:48 by asadik            #+#    #+#             */
-/*   Updated: 2026/05/29 11:59:00 by asadik           ###   ########.fr       */
+/*   Updated: 2026/06/04 12:15:54 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.h"
 #include <pthread.h>
+#include <stdlib.h>
 
 void	bla(t_state *state, unsigned int i, bool *alive)
 {
@@ -55,10 +56,15 @@ void	monitor(t_state *state)
 int	main(int argc, char **argv)
 {
 	t_state			state;
+	int				i;
 
 	if (argc != 5 && argc != 6)
 		return (1);
 	if (!init_state(argc, argv, &state))
 		return (1);
 	monitor(&state);
+	free(state.philosophers);
+	while (i < state.philo_n)
+		pthread_mutex_destroy(&state.forks[i]);
+	free(state.forks);
 }

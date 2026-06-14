@@ -6,7 +6,7 @@
 /*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/14 19:04:55 by asadik            #+#    #+#             */
-/*   Updated: 2026/05/29 10:55:22 by asadik           ###   ########.fr       */
+/*   Updated: 2026/06/14 11:44:47 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,35 +17,31 @@
 # include <stdbool.h>
 # include <pthread.h>
 
-typedef enum s_p_state
-{
-	Eating,
-	Sleeping,
-	Thinking
-}			t_p_state;
-
 typedef struct s_philosopher
 {
 	pthread_t		thread;
 	unsigned int	n;
 	unsigned int	ate_n;
+	unsigned long	last_meal;
 	struct s_state	*state;
 	pthread_mutex_t	lock;
-	t_p_state		action;
-	bool			dead;
-	bool			skip;
+	pthread_mutex_t	*left_fork;
+	pthread_mutex_t	*right_fork;
 }				t_philosopher;
 
 typedef struct s_state
 {
-	struct s_philosopher	philosophers[200];
-	pthread_mutex_t			forks[200];
+	struct s_philosopher	*philosophers;
+	pthread_mutex_t			*forks;
 	struct timeval			start;
 	unsigned int			philo_n;
 	unsigned int			tt_die;
 	unsigned int			tt_eat;
 	unsigned int			tt_sleep;
 	int						eat_n;
+	bool					is_dead;
+	pthread_mutex_t			death_lock;
+	pthread_mutex_t			print_lock;
 }				t_state;
 
 typedef enum e_rtype
@@ -68,5 +64,6 @@ typedef struct s_result
 
 bool		init_state(int argc, char **argv, t_state *state);
 t_result	ft_atoi(const char *nptr);
+unsigned long	time_delta_ms(struct timeval start, struct timeval end);
 
 #endif
