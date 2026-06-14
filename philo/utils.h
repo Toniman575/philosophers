@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
+/*   By: anton <anton@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/14 19:04:55 by asadik            #+#    #+#             */
-/*   Updated: 2026/06/14 11:44:47 by asadik           ###   ########.fr       */
+/*   Updated: 2026/06/14 19:24:12 by anton            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ typedef struct s_state
 {
 	struct s_philosopher	*philosophers;
 	pthread_mutex_t			*forks;
-	struct timeval			start;
+	unsigned int			start;
 	unsigned int			philo_n;
 	unsigned int			tt_die;
 	unsigned int			tt_eat;
@@ -62,8 +62,9 @@ typedef struct s_result
 	t_rreturn	value;
 }	t_result;
 
-bool		init_state(int argc, char **argv, t_state *state);
-t_result	ft_atoi(const char *nptr);
-unsigned long	time_delta_ms(struct timeval start, struct timeval end);
+bool			init_state(int argc, char **argv, t_state *state);
+t_result		ft_atoi(const char *nptr);
+unsigned long	gettimeofday_ms(void);
+void			print(t_philosopher *philo, char *str);
 
 #endif
