@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anton <anton@student.42.fr>                +#+  +:+       +#+        */
+/*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 13:46:38 by asadik            #+#    #+#             */
-/*   Updated: 2026/06/14 19:25:36 by anton            ###   ########.fr       */
+/*   Updated: 2026/06/22 15:50:02 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,12 @@ void	print(t_philosopher *philo, char *str)
 	pthread_mutex_lock(&philo->state->print_lock);
 	pthread_mutex_lock(&philo->state->death_lock);
 	if (!philo->state->is_dead)
+	{
+//		unsigned long current = gettimeofday_ms();
+//		printf("Current: %ld, Start: %ld", current, philo->state->start);
 		printf("%ld %i %s\n", gettimeofday_ms() - philo->state->start,
 			philo->n, str);
+	}
 	pthread_mutex_unlock(&philo->state->print_lock);
 	pthread_mutex_unlock(&philo->state->death_lock);
 }

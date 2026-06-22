@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anton <anton@student.42.fr>                +#+  +:+       +#+        */
+/*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/14 19:04:48 by asadik            #+#    #+#             */
-/*   Updated: 2026/06/14 19:22:21 by anton            ###   ########.fr       */
+/*   Updated: 2026/06/22 16:10:29 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 static bool	check_philo_status(t_state *state, unsigned int i, bool *all_sated)
 {
 	pthread_mutex_lock(&state->philosophers[i].lock);
-	if ((gettimeofday_ms() - state->philosophers[i].last_meal) >= state->tt_die)
+	if ((gettimeofday_ms() - state->philosophers[i].last_meal) >= (unsigned long)state->tt_die)
 	{
 		pthread_mutex_unlock(&state->philosophers[i].lock);
 		pthread_mutex_lock(&state->death_lock);
@@ -29,8 +29,9 @@ static bool	check_philo_status(t_state *state, unsigned int i, bool *all_sated)
 		pthread_mutex_unlock(&state->print_lock);
 		return (0);
 	}
-	if (state->eat_n != -1 && state->philosophers[i].ate_n < state->eat_n)
-		all_sated = false;
+	if (state->eat_n != -1 && state->philosophers[i].ate_n
+		< (unsigned int)state->eat_n)
+		*all_sated = false;
 	pthread_mutex_unlock(&state->philosophers[i].lock);
 	return (1);
 }
@@ -70,9 +71,15 @@ int	main(int argc, char **argv)
 	if (!init_state(argc, argv, &state))
 		return (1);
 	monitor(&state);
-	while (i < state.philo_n)
+	i = 0;
+	while((unsigned int)i < state.philo_n)
 	{
 		pthread_join(state.philosophers[i].thread, NULL);
+		i++;	
+	}
+	i = 0;
+	while ((unsigned int)i < state.philo_n)
+	{
 		pthread_mutex_destroy(&state.forks[i]);
 		pthread_mutex_destroy(&state.philosophers[i].lock);
 		i++;

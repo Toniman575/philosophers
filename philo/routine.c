@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   routine.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anton <anton@student.42.fr>                +#+  +:+       +#+        */
+/*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/14 17:34:05 by anton             #+#    #+#             */
-/*   Updated: 2026/06/14 19:24:37 by anton            ###   ########.fr       */
+/*   Created: 2026/06/22 13:58:52 by asadik            #+#    #+#             */
+/*   Updated: 2026/06/22 15:59:15 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,8 @@ void	*routine(void *arg)
 		}
 		pthread_mutex_unlock(&state->death_lock);
 		eating(philo);
+		pthread_mutex_unlock(philo->right_fork);
+		pthread_mutex_unlock(philo->left_fork);
 		sleeping(philo);
 		thinking(philo);
 	}

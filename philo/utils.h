@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anton <anton@student.42.fr>                +#+  +:+       +#+        */
+/*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/14 19:04:55 by asadik            #+#    #+#             */
-/*   Updated: 2026/06/14 19:24:12 by anton            ###   ########.fr       */
+/*   Updated: 2026/06/22 15:49:47 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ typedef struct s_state
 {
 	struct s_philosopher	*philosophers;
 	pthread_mutex_t			*forks;
-	unsigned int			start;
+	unsigned long			start;
 	unsigned int			philo_n;
 	unsigned int			tt_die;
 	unsigned int			tt_eat;

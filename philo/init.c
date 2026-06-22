@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anton <anton@student.42.fr>                +#+  +:+       +#+        */
+/*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 13:36:45 by asadik            #+#    #+#             */
-/*   Updated: 2026/06/21 09:38:32 by anton            ###   ########.fr       */
+/*   Updated: 2026/06/22 16:13:03 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,9 @@ static t_philosopher	init_philo(unsigned int n, t_state *state)
 	pthread_mutex_init(&philo.lock, NULL);
 	philo.ate_n = 0;
 	philo.last_meal = gettimeofday_ms();
-	state->philosophers[n].state = state;
-	state->philosophers[n].left_fork = &state->forks[n];
-	state->philosophers[n].right_fork = &state->forks[(n + 1)
-		% state->philo_n];
+	philo.state = state;
+	philo.left_fork = &state->forks[n];
+	philo.right_fork = &state->forks[(n + 1) % state->philo_n];
 	return (philo);
 }
 
@@ -68,6 +67,7 @@ static bool	init_philos(t_state *state)
 	i = 0;
 	while (i < state->philo_n)
 	{
+		state->philosophers[i] = init_philo(i, state);
 		if (pthread_create(&state->philosophers[i].thread, NULL, routine,
 				(void *)&state->philosophers[i]) != 0)
 		{
@@ -80,14 +80,12 @@ static bool	init_philos(t_state *state)
 			}
 			return (false);
 		}
-		pthread_mutex_init(&state->forks[i], NULL);
-		state->philosophers[i] = init_philo(i, state);
 		i++;
 	}
 	return (true);
 }
 
-static bool	check_alloc(t_state *state)
+static bool	check_alloc(t_state *state, int i)
 {
 	bool	check;
 
@@ -102,6 +100,15 @@ static bool	check_alloc(t_state *state)
 			free(state->philosophers);
 		if (state->forks != NULL)
 			free (state->forks);
+		return (check);
+	}
+	pthread_mutex_init(&state->death_lock, NULL);
+	pthread_mutex_init(&state->print_lock, NULL);
+	i = 0;
+	while ((unsigned int)i < state->philo_n)
+	{
+		pthread_mutex_init(&state->forks[i], NULL);
+		i++;
 	}
 	return (check);
 }
@@ -126,10 +133,10 @@ bool	init_state(int argc, char **argv, t_state *state)
 	}
 	state->philosophers = malloc(sizeof(t_philosopher) * state->philo_n);
 	state->forks = malloc(sizeof(pthread_mutex_t) * state->philo_n);
-	if (!check_alloc(state))
-		return (false);
-	if (!init_philos(state))
+	if (!check_alloc(state, i))
 		return (false);
 	state->start = gettimeofday_ms();
+	if (!init_philos(state))
+		return (false);
 	return (true);
 }
