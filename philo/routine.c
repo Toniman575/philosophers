@@ -6,7 +6,7 @@
 /*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/22 13:58:52 by asadik            #+#    #+#             */
-/*   Updated: 2026/06/22 15:59:15 by asadik           ###   ########.fr       */
+/*   Updated: 2026/06/24 14:18:11 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,32 +16,23 @@
 
 static void	eating(t_philosopher *philo)
 {
-	if (philo->n % 2 != 0)
-	{
-		pthread_mutex_lock(philo->left_fork);
-		print(philo, "has taken a fork");
+	pthread_mutex_lock(philo->left_fork);
+	print(philo, "has taken a fork");
+	if (philo->state->philo_n > 1)
 		pthread_mutex_lock(philo->right_fork);
-		print(philo, "has taken a fork");
-	}
-	else
-	{
-		pthread_mutex_lock(philo->right_fork);
-		print(philo, "has taken a fork");
-		pthread_mutex_lock(philo->left_fork);
-		print(philo, "has taken a fork");
-	}
+	print(philo, "has taken a fork");
 	print(philo, "is eating");
 	pthread_mutex_lock(&philo->lock);
 	philo->last_meal = gettimeofday_ms();
 	philo->ate_n++;
 	pthread_mutex_unlock(&philo->lock);
-	usleep(philo->state->tt_eat * 1000);
+	ms_sleep(philo->state->tt_eat, philo->state);
 }
 
 static void	sleeping(t_philosopher *philo)
 {
 	print(philo, "is sleeping");
-	usleep(philo->state->tt_sleep * 1000);
+	ms_sleep(philo->state->tt_sleep, philo->state);
 }
 
 static void	thinking(t_philosopher *philo)
@@ -53,7 +44,7 @@ static void	thinking(t_philosopher *philo)
 	{
 		if (time < 0)
 			time = 0;
-		usleep(time * 1000 + 1000);
+		ms_sleep(time + 1, philo->state);
 	}
 }
 

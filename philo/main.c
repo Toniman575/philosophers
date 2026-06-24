@@ -6,7 +6,7 @@
 /*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/14 19:04:48 by asadik            #+#    #+#             */
-/*   Updated: 2026/06/22 16:10:29 by asadik           ###   ########.fr       */
+/*   Updated: 2026/06/24 14:21:16 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@
 static bool	check_philo_status(t_state *state, unsigned int i, bool *all_sated)
 {
 	pthread_mutex_lock(&state->philosophers[i].lock);
-	if ((gettimeofday_ms() - state->philosophers[i].last_meal) >= (unsigned long)state->tt_die)
+	if ((gettimeofday_ms() - state->philosophers[i].last_meal)
+		>= (unsigned long)state->tt_die)
 	{
 		pthread_mutex_unlock(&state->philosophers[i].lock);
 		pthread_mutex_lock(&state->death_lock);
@@ -72,10 +73,10 @@ int	main(int argc, char **argv)
 		return (1);
 	monitor(&state);
 	i = 0;
-	while((unsigned int)i < state.philo_n)
+	while ((unsigned int)i < state.philo_n)
 	{
 		pthread_join(state.philosophers[i].thread, NULL);
-		i++;	
+		i++;
 	}
 	i = 0;
 	while ((unsigned int)i < state.philo_n)

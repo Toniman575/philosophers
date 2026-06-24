@@ -6,7 +6,7 @@
 /*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 13:36:45 by asadik            #+#    #+#             */
-/*   Updated: 2026/06/22 16:13:03 by asadik           ###   ########.fr       */
+/*   Updated: 2026/06/24 14:07:12 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,11 +126,6 @@ bool	init_state(int argc, char **argv, t_state *state)
 	}
 	if (argc == 5)
 		state->eat_n = -1;
-	if (state->philo_n < 2)
-	{
-		printf("Please input at least 2 philosopers.");
-		return (false);
-	}
 	state->philosophers = malloc(sizeof(t_philosopher) * state->philo_n);
 	state->forks = malloc(sizeof(pthread_mutex_t) * state->philo_n);
 	if (!check_alloc(state, i))

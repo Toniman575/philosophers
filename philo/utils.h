@@ -6,7 +6,7 @@
 /*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/14 19:04:55 by asadik            #+#    #+#             */
-/*   Updated: 2026/06/22 15:49:47 by asadik           ###   ########.fr       */
+/*   Updated: 2026/06/24 14:17:49 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,5 +66,6 @@ bool			init_state(int argc, char **argv, t_state *state);
 t_result		ft_atoi(const char *nptr);
 unsigned long	gettimeofday_ms(void);
 void			print(t_philosopher *philo, char *str);
+void			ms_sleep(unsigned long sleep_time, t_state *state);
 
 #endif
