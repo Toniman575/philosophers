@@ -6,7 +6,7 @@
 /*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/14 19:04:55 by asadik            #+#    #+#             */
-/*   Updated: 2026/07/24 11:55:41 by asadik           ###   ########.fr       */
+/*   Updated: 2026/09/27 20:42:54 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,14 @@ typedef enum e_rtype
 {
 	ERROR,
 	INT,
+	PHILO,
 }	t_rtype;
 
 typedef union u_rreturn
 {
-	char	*error;
-	int		n;
+	char			*error;
+	int				n;
+	t_philosopher	philo;
 }	t_rreturn;
 
 typedef struct s_result
@@ -67,5 +69,7 @@ t_result		ft_atoi(const char *nptr);
 unsigned long	gettimeofday_ms(void);
 void			print(t_philosopher *philo, char *str);
 void			ms_sleep(unsigned long sleep_time, t_state *state);
+void			check_alloc(bool *check, t_state *state);
+void			philo_cleanup(t_result result, int i, t_state *state);
 
 #endif

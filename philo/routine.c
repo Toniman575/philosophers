@@ -6,7 +6,7 @@
 /*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/22 13:58:52 by asadik            #+#    #+#             */
-/*   Updated: 2026/07/24 11:55:37 by asadik           ###   ########.fr       */
+/*   Updated: 2026/09/27 20:44:12 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ static void	eating(t_philosopher *philo)
 {
 	pthread_mutex_lock(philo->left_fork);
 	print(philo, "has taken a fork");
-	if (philo->state->philo_n > 1){
-		pthread_mutex_lock(philo->right_fork);}
+	if (philo->state->philo_n > 1)
+		pthread_mutex_lock(philo->right_fork);
 	else
 		ms_sleep(philo->state->tt_die, philo->state);
 	print(philo, "has taken a fork");
