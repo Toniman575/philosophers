@@ -6,7 +6,7 @@
 /*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 13:36:45 by asadik            #+#    #+#             */
-/*   Updated: 2026/09/27 20:43:39 by asadik           ###   ########.fr       */
+/*   Updated: 2026/09/27 21:50:45 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,19 +77,21 @@ static bool	init_philos(t_state *state)
 	while (i < state->philo_n)
 	{
 		result = init_philo(i, state);
-		if (result.type != ERROR && pthread_create(
-				&state->philosophers[i].thread, NULL, routine,
-				(void *)&state->philosophers[i]) != 0)
-		{
-			result.type = ERROR;
-			result.value.error = "Error creating a thread";
-		}
 		if (result.type == ERROR)
 		{
 			philo_cleanup(result, i, state);
 			return (false);
 		}
 		state->philosophers[i] = result.value.philo;
+		if (result.type != ERROR && pthread_create(
+				&state->philosophers[i].thread, NULL, routine,
+				(void *)&state->philosophers[i]) != 0)
+		{
+			result.type = ERROR;
+			result.value.error = "Error creating a thread";
+			philo_cleanup(result, i, state);
+			return (false);
+		}
 		i++;
 	}
 	return (true);
@@ -128,6 +130,7 @@ bool	init_state(int argc, char **argv, t_state *state)
 	int	i;
 
 	i = 1;
+	state->is_dead = false;
 	while (i < argc)
 	{
 		if (!read_arg(i, argv, state))

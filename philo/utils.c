@@ -6,7 +6,7 @@
 /*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 13:46:38 by asadik            #+#    #+#             */
-/*   Updated: 2026/09/27 20:42:37 by asadik           ###   ########.fr       */
+/*   Updated: 2026/09/27 21:47:58 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,10 @@ void	ms_sleep(unsigned long sleep_time, t_state *state)
 void	check_alloc(bool *check, t_state *state)
 {
 	if (state->philosophers == NULL)
-		check = false;
+		*check = false;
 	if (state->forks == NULL)
-		check = false;
-	if (!check)
+		*check = false;
+	if (!(*check))
 	{
 		if (state->philosophers != NULL)
 			free(state->philosophers);
@@ -71,13 +71,13 @@ void	check_alloc(bool *check, t_state *state)
 		return ;
 	}
 	if (pthread_mutex_init(&state->death_lock, NULL) != 0)
-		check = false;
-	if (check && pthread_mutex_init(&state->print_lock, NULL) != 0)
+		*check = false;
+	if (*check && pthread_mutex_init(&state->print_lock, NULL) != 0)
 	{
 		pthread_mutex_destroy(&state->print_lock);
-		check = false;
+		*check = false;
 	}
-	if (!check)
+	if (!(*check))
 	{
 		free(state->philosophers);
 		free (state->forks);
