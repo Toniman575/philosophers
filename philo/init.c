@@ -6,7 +6,7 @@
 /*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 13:36:45 by asadik            #+#    #+#             */
-/*   Updated: 2026/09/28 13:55:38 by asadik           ###   ########.fr       */
+/*   Updated: 2026/09/28 15:19:06 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,7 @@ bool	init_state(int argc, char **argv, t_state *state)
 		i++;
 	}
 	if (state->philo_n == 0)
-		return (printf("Please input more than 0 Philosophers.", false));
+		return (printf("Please input more than 0 Philosophers."), false);
 	if (argc == 5)
 		state->eat_n = -1;
 	state->philosophers = malloc(sizeof(t_philosopher) * state->philo_n);
