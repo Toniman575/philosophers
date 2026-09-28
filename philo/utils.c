@@ -6,7 +6,7 @@
 /*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 13:46:38 by asadik            #+#    #+#             */
-/*   Updated: 2026/09/27 21:47:58 by asadik           ###   ########.fr       */
+/*   Updated: 2026/09/28 10:21:23 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	print(t_philosopher *philo, char *str)
 	if (!philo->state->is_dead)
 	{
 		printf("%ld %i %s\n", gettimeofday_ms() - philo->state->start,
-			philo->n, str);
+			philo->n + 1, str);
 	}
 	pthread_mutex_unlock(&philo->state->print_lock);
 	pthread_mutex_unlock(&philo->state->death_lock);

@@ -6,7 +6,7 @@
 /*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 13:36:45 by asadik            #+#    #+#             */
-/*   Updated: 2026/09/27 21:50:45 by asadik           ###   ########.fr       */
+/*   Updated: 2026/09/28 10:19:15 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,9 @@ static bool	read_arg(int argn, char **argv, t_state *state)
 		printf("%s\n", check.value.error);
 		return (false);
 	}
-	else if (check.value.n < 0)
+	else if (check.value.n <= 0)
 	{
-		printf("Please only input positive numbers.\n");
+		printf("Please only input positive numbers greater than 0.\n");
 		return (false);
 	}
 	else if (argn == 1)
