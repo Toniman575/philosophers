@@ -6,7 +6,7 @@
 /*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 13:46:38 by asadik            #+#    #+#             */
-/*   Updated: 2026/09/28 10:21:23 by asadik           ###   ########.fr       */
+/*   Updated: 2026/09/28 13:56:26 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,4 +93,6 @@ void	philo_cleanup(t_result result, int i, t_state *state)
 		pthread_join(state->philosophers[i].thread, NULL);
 		pthread_mutex_destroy(&state->forks[i]);
 	}
+	free(state->philosophers);
+	free (state->forks);
 }
