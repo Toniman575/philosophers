@@ -6,7 +6,7 @@ This project implements the classic Dining Philosophers problem in C. Each philo
 
 Philosopher `i` tries to take fork `i` (left) and fork `i+1` (right). To reduce race conditions, even-numbered threads start with an initial sleep. To avoid deadlocks when the number of philosophers is odd, each philosopher spends some time thinking after eating. Mutexes are also used for printing, to avoid mixed output, and for death checks, to prevent a philosopher from starting to eat after the simulation has ended.
 
-## Build
+## Instructions
 
 ```bash
 cd Philo
