@@ -6,7 +6,7 @@
 /*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/22 13:58:52 by asadik            #+#    #+#             */
-/*   Updated: 2026/10/01 12:04:55 by asadik           ###   ########.fr       */
+/*   Updated: 2026/10/01 12:26:21 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,21 @@
 #include <pthread.h>
 #include <unistd.h>
 
+static void	*lone_philo(t_philosopher *philo)
+{
+	pthread_mutex_lock(philo->left_fork);
+	print(philo, "has taken a fork");
+	ms_sleep(philo->state->tt_die + 1, philo->state);
+	pthread_mutex_unlock(philo->left_fork);
+	return (NULL);
+}
+
 static void	eating(t_philosopher *philo)
 {
 	pthread_mutex_lock(philo->left_fork);
 	print(philo, "has taken a fork");
 	if (philo->state->philo_n > 1)
 		pthread_mutex_lock(philo->right_fork);
-	else
-		ms_sleep(philo->state->tt_die, philo->state);
 	print(philo, "has taken a fork");
 	print(philo, "is eating");
 	pthread_mutex_lock(&philo->lock);
@@ -58,6 +65,8 @@ void	*routine(void *arg)
 
 	philo = (t_philosopher *)arg;
 	state = philo->state;
+	if (state->philo_n == 1)
+		return (lone_philo(philo));
 	if (philo->n % 2 == 0)
 		ms_sleep(state->tt_eat / 2, state);
 	while (1)

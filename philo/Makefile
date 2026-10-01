@@ -22,6 +22,9 @@ re: fclean all
 debug: fclean
 	$(MAKE) all CFLAGS="$(CFLAGS) -g"
 
-.PHONY: all clean fclean re debug
+sanitize: fclean
+	$(MAKE) all CFLAGS="$(CFLAGS) -fsanitize=thread"
+
+.PHONY: all clean fclean re debug sanitize
 
 -include $(DEPS)
