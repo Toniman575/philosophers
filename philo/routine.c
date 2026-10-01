@@ -6,7 +6,7 @@
 /*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/22 13:58:52 by asadik            #+#    #+#             */
-/*   Updated: 2026/10/01 12:35:02 by asadik           ###   ########.fr       */
+/*   Updated: 2026/10/01 12:51:01 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,27 @@ static void	*lone_philo(t_philosopher *philo)
 	return (NULL);
 }
 
+static void	take_forks(t_philosopher *philo)
+{
+	pthread_mutex_t	*first;
+	pthread_mutex_t	*second;
+
+	first = philo->left_fork;
+	second = philo->right_fork;
+	if (first > second)
+	{
+		first = philo->right_fork;
+		second = philo->left_fork;
+	}
+	pthread_mutex_lock(first);
+	print(philo, "has taken a fork");
+	pthread_mutex_lock(second);
+	print(philo, "has taken a fork");
+}
+
 static void	eating(t_philosopher *philo)
 {
-	pthread_mutex_lock(philo->left_fork);
-	print(philo, "has taken a fork");
-	if (philo->state->philo_n > 1)
-		pthread_mutex_lock(philo->right_fork);
+	take_forks(philo);
 	print(philo, "has taken a fork");
 	pthread_mutex_lock(&philo->lock);
 	philo->last_meal = gettimeofday_ms();
@@ -38,24 +53,22 @@ static void	eating(t_philosopher *philo)
 	ms_sleep(philo->state->tt_eat, philo->state);
 }
 
-static void	sleeping(t_philosopher *philo)
+static void	sleep_thinking(t_philosopher *philo)
 {
+	long	slack;
+
 	print(philo, "is sleeping");
 	ms_sleep(philo->state->tt_sleep, philo->state);
-}
-
-static void	thinking(t_philosopher *philo)
-{
-	long	time;
-
-	time = (long)philo->state->tt_eat - (long)philo->state->tt_sleep;
 	print(philo, "is thinking");
-	if (philo->state->philo_n % 2 != 0)
-	{
-		if (time < 0)
-			time = 0;
-		ms_sleep(time + 1, philo->state);
-	}
+	if (philo->state->philo_n % 2 == 0)
+		return ;
+	pthread_mutex_lock(&philo->lock);
+	slack = (long)philo->state->tt_die
+		- (long)(gettimeofday_ms() - philo->last_meal)
+		- (long)philo->state->tt_eat;
+	pthread_mutex_unlock(&philo->lock);
+	if (slack > 1)
+		ms_sleep(slack / 2, philo->state);
 }
 
 void	*routine(void *arg)
@@ -81,8 +94,7 @@ void	*routine(void *arg)
 		eating(philo);
 		pthread_mutex_unlock(philo->right_fork);
 		pthread_mutex_unlock(philo->left_fork);
-		sleeping(philo);
-		thinking(philo);
+		sleep_thinking(philo);
 	}
 	return (NULL);
 }
