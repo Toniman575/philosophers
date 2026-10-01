@@ -6,7 +6,7 @@
 /*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/14 19:04:48 by asadik            #+#    #+#             */
-/*   Updated: 2026/10/01 12:04:07 by asadik           ###   ########.fr       */
+/*   Updated: 2026/10/01 12:32:32 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 static bool	check_philo_status(t_state *state, unsigned int i, bool *all_sated)
 {
@@ -59,6 +60,7 @@ static void	monitor(t_state *state)
 			pthread_mutex_unlock(&state->death_lock);
 			return ;
 		}
+		usleep(500);
 	}
 }
 
