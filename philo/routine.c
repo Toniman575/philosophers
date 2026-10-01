@@ -6,7 +6,7 @@
 /*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/22 13:58:52 by asadik            #+#    #+#             */
-/*   Updated: 2026/09/27 20:44:12 by asadik           ###   ########.fr       */
+/*   Updated: 2026/10/01 12:04:55 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static void	thinking(t_philosopher *philo)
 {
 	long	time;
 
-	time = philo->state->tt_eat - philo->state->tt_sleep;
+	time = (long)philo->state->tt_eat - (long)philo->state->tt_sleep;
 	print(philo, "is thinking");
 	if (philo->state->philo_n % 2 != 0)
 	{

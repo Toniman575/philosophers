@@ -6,7 +6,7 @@
 /*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/14 19:04:48 by asadik            #+#    #+#             */
-/*   Updated: 2026/06/24 14:21:16 by asadik           ###   ########.fr       */
+/*   Updated: 2026/10/01 12:04:07 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static bool	check_philo_status(t_state *state, unsigned int i, bool *all_sated)
 		state->is_dead = 1;
 		pthread_mutex_unlock(&state->death_lock);
 		pthread_mutex_lock(&state->print_lock);
-		printf("%ld %i died\n", gettimeofday_ms() - state->start, i);
+		printf("%ld %i died\n", gettimeofday_ms() - state->start, i + 1);
 		pthread_mutex_unlock(&state->print_lock);
 		return (0);
 	}
