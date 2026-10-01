@@ -6,7 +6,7 @@
 /*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/22 13:58:52 by asadik            #+#    #+#             */
-/*   Updated: 2026/10/01 12:51:01 by asadik           ###   ########.fr       */
+/*   Updated: 2026/10/01 13:48:01 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ static void	take_forks(t_philosopher *philo)
 static void	eating(t_philosopher *philo)
 {
 	take_forks(philo);
-	print(philo, "has taken a fork");
 	pthread_mutex_lock(&philo->lock);
 	philo->last_meal = gettimeofday_ms();
 	philo->ate_n++;
@@ -55,20 +54,16 @@ static void	eating(t_philosopher *philo)
 
 static void	sleep_thinking(t_philosopher *philo)
 {
-	long	slack;
+	long	think;
 
 	print(philo, "is sleeping");
 	ms_sleep(philo->state->tt_sleep, philo->state);
 	print(philo, "is thinking");
 	if (philo->state->philo_n % 2 == 0)
 		return ;
-	pthread_mutex_lock(&philo->lock);
-	slack = (long)philo->state->tt_die
-		- (long)(gettimeofday_ms() - philo->last_meal)
-		- (long)philo->state->tt_eat;
-	pthread_mutex_unlock(&philo->lock);
-	if (slack > 1)
-		ms_sleep(slack / 2, philo->state);
+	think = 2L * (long)philo->state->tt_eat - (long)philo->state->tt_sleep;
+	if (think > 0)
+		ms_sleep(think, philo->state);
 }
 
 void	*routine(void *arg)
@@ -80,8 +75,7 @@ void	*routine(void *arg)
 	state = philo->state;
 	if (state->philo_n == 1)
 		return (lone_philo(philo));
-	if (philo->n % 2 == 0)
-		ms_sleep(state->tt_eat / 2, state);
+	start_delay(philo);
 	while (1)
 	{
 		pthread_mutex_lock(&state->death_lock);

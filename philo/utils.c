@@ -6,7 +6,7 @@
 /*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 13:46:38 by asadik            #+#    #+#             */
-/*   Updated: 2026/10/01 13:39:40 by asadik           ###   ########.fr       */
+/*   Updated: 2026/10/01 14:24:05 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,4 +81,21 @@ void	ms_sleep(unsigned long sleep_time, t_state *state)
 		pthread_mutex_unlock(&state->death_lock);
 		usleep(500);
 	}
+}
+
+void	start_delay(t_philosopher *philo)
+{
+	t_state	*state;
+
+	state = philo->state;
+	if (state->philo_n % 2 == 0)
+	{
+		if (philo->n % 2 == 0)
+			ms_sleep(state->tt_eat / 2, state);
+		return ;
+	}
+	if (philo->n == state->philo_n - 1)
+		ms_sleep(2UL * state->tt_eat, state);
+	else if (philo->n % 2 == 1)
+		ms_sleep(state->tt_eat, state);
 }

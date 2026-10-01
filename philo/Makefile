@@ -23,7 +23,7 @@ debug: fclean
 	$(MAKE) all CFLAGS="$(CFLAGS) -g"
 
 sanitize: fclean
-	$(MAKE) all CFLAGS="$(CFLAGS) -fsanitize=thread"
+	$(MAKE) all CFLAGS="$(CFLAGS) -g -pthread -fsanitize=thread"
 
 .PHONY: all clean fclean re debug sanitize
 
