@@ -6,14 +6,13 @@
 /*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/14 19:04:48 by asadik            #+#    #+#             */
-/*   Updated: 2026/10/01 12:32:32 by asadik           ###   ########.fr       */
+/*   Updated: 2026/10/01 13:35:23 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.h"
 #include <pthread.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
 
 static bool	check_philo_status(t_state *state, unsigned int i, bool *all_sated)
@@ -67,28 +66,12 @@ static void	monitor(t_state *state)
 int	main(int argc, char **argv)
 {
 	t_state			state;
-	int				i;
 
 	if (argc != 5 && argc != 6)
 		return (1);
 	if (!init_state(argc, argv, &state))
 		return (1);
 	monitor(&state);
-	i = 0;
-	while ((unsigned int)i < state.philo_n)
-	{
-		pthread_join(state.philosophers[i].thread, NULL);
-		i++;
-	}
-	i = 0;
-	while ((unsigned int)i < state.philo_n)
-	{
-		pthread_mutex_destroy(&state.forks[i]);
-		pthread_mutex_destroy(&state.philosophers[i].lock);
-		i++;
-	}
-	pthread_mutex_destroy(&state.print_lock);
-	pthread_mutex_destroy(&state.death_lock);
-	free(state.philosophers);
-	free(state.forks);
+	state_destroy(&state);
+	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/14 19:04:55 by asadik            #+#    #+#             */
-/*   Updated: 2026/09/27 20:42:54 by asadik           ###   ########.fr       */
+/*   Updated: 2026/10/01 13:40:00 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,20 +42,22 @@ typedef struct s_state
 	bool					is_dead;
 	pthread_mutex_t			death_lock;
 	pthread_mutex_t			print_lock;
+	unsigned int			forks_n;
+	unsigned int			locks_n;
+	unsigned int			threads_n;
+	bool					globals_ready;
 }				t_state;
 
 typedef enum e_rtype
 {
 	ERROR,
 	INT,
-	PHILO,
 }	t_rtype;
 
 typedef union u_rreturn
 {
 	char			*error;
 	int				n;
-	t_philosopher	philo;
 }	t_rreturn;
 
 typedef struct s_result
@@ -69,7 +71,8 @@ t_result		ft_atoi(const char *nptr);
 unsigned long	gettimeofday_ms(void);
 void			print(t_philosopher *philo, char *str);
 void			ms_sleep(unsigned long sleep_time, t_state *state);
-void			check_alloc(bool *check, t_state *state);
-void			philo_cleanup(t_result result, int i, t_state *state);
+bool			init_fail(t_state *state, char *msg);
+void			state_destroy(t_state *state);
+bool			read_arg(int argn, char **argv, t_state *state);
 
 #endif

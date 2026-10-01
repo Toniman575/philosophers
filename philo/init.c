@@ -6,7 +6,7 @@
 /*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/19 13:36:45 by asadik            #+#    #+#             */
-/*   Updated: 2026/10/01 12:10:01 by asadik           ###   ########.fr       */
+/*   Updated: 2026/10/01 13:39:32 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,123 +15,89 @@
 #include <pthread.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
+#include <string.h>
 
-static bool	read_arg(int argn, char **argv, t_state *state)
+static bool	init_globals(t_state *state)
 {
-	t_result	check;
-
-	check = ft_atoi(argv[argn]);
-	if (check.type == ERROR)
+	if (pthread_mutex_init(&state->death_lock, NULL) != 0)
+		return (false);
+	if (pthread_mutex_init(&state->print_lock, NULL) != 0)
 	{
-		printf("%s\n", check.value.error);
+		pthread_mutex_destroy(&state->death_lock);
 		return (false);
 	}
-	else if (check.value.n < 0)
-	{
-		printf("Please only input positive numbers.\n");
-		return (false);
-	}
-	else if (argn == 1)
-		state->philo_n = (unsigned int)check.value.n;
-	else if (argn == 2)
-		state->tt_die = (unsigned int)check.value.n;
-	else if (argn == 3)
-		state->tt_eat = (unsigned int)check.value.n;
-	else if (argn == 4)
-		state->tt_sleep = (unsigned int)check.value.n;
-	else if (argn == 5)
-		state->eat_n = check.value.n;
+	state->globals_ready = true;
 	return (true);
 }
 
-static t_result	init_philo(unsigned int n, t_state *state)
+static bool	init_forks(t_state *state)
 {
-	t_philosopher	philo;
-	t_result		result;
+	unsigned int	i;
 
-	philo.n = n;
-	if (pthread_mutex_init(&philo.lock, NULL) != 0)
+	i = 0;
+	while (i < state->philo_n)
 	{
-		result.type = ERROR;
-		result.value.error = "Error creating mutex";
-		return (result);
+		if (pthread_mutex_init(&state->forks[i], NULL) != 0)
+			return (false);
+		state->forks_n++;
+		i++;
 	}
-	philo.ate_n = 0;
-	philo.last_meal = gettimeofday_ms();
-	philo.state = state;
-	philo.left_fork = &state->forks[n];
-	philo.right_fork = &state->forks[(n + 1) % state->philo_n];
-	result.type = PHILO;
-	result.value.philo = philo;
-	return (result);
+	return (true);
 }
 
 static bool	init_philos(t_state *state)
 {
 	unsigned int	i;
-	t_result		result;
+	t_philosopher	*philo;
 
 	i = 0;
 	while (i < state->philo_n)
 	{
-		result = init_philo(i, state);
-		if (result.type == ERROR)
-		{
-			philo_cleanup(result, i, state);
+		philo = &state->philosophers[i];
+		if (pthread_mutex_init(&philo->lock, NULL) != 0)
 			return (false);
-		}
-		state->philosophers[i] = result.value.philo;
-		if (result.type != ERROR && pthread_create(
-				&state->philosophers[i].thread, NULL, routine,
-				(void *)&state->philosophers[i]) != 0)
-		{
-			result.type = ERROR;
-			result.value.error = "Error creating a thread";
-			philo_cleanup(result, i, state);
-			return (false);
-		}
+		state->locks_n++;
+		philo->n = i;
+		philo->ate_n = 0;
+		philo->state = state;
+		philo->left_fork = &state->forks[i];
+		philo->right_fork = &state->forks[(i + 1) % state->philo_n];
 		i++;
 	}
 	return (true);
 }
 
-static bool	init_forks(t_state *state, int i)
+static bool	start_threads(t_state *state)
 {
-	bool	check;
+	unsigned int	i;
 
-	check = true;
-	check_alloc(&check, state);
-	if (!check)
-		return (check);
+	state->start = gettimeofday_ms();
 	i = 0;
-	while ((unsigned int)i < state->philo_n)
+	while (i < state->philo_n)
 	{
-		if (pthread_mutex_init(&state->forks[i], NULL) != 0)
-		{
-			free(state->philosophers);
-			free (state->forks);
-			pthread_mutex_destroy(&state->death_lock);
-			pthread_mutex_destroy(&state->print_lock);
-			while (i > 0)
-			{
-				pthread_mutex_destroy(&state->forks[i]);
-				i--;
-			}
-			break ;
-		}
+		state->philosophers[i].last_meal = state->start;
 		i++;
 	}
-	return (check);
+	i = 0;
+	while (i < state->philo_n)
+	{
+		if (pthread_create(&state->philosophers[i].thread, NULL,
+				routine, &state->philosophers[i]) != 0)
+			return (false);
+		state->threads_n++;
+		i++;
+	}
+	return (true);
 }
 
 bool	init_state(int argc, char **argv, t_state *state)
 {
 	int	i;
 
+	memset(state, 0, sizeof(*state));
+	state->eat_n = -1;
 	i = 1;
-	state->is_dead = false;
 	while (i < argc)
 	{
 		if (!read_arg(i, argv, state))
@@ -139,15 +105,16 @@ bool	init_state(int argc, char **argv, t_state *state)
 		i++;
 	}
 	if (state->philo_n == 0)
-		return (printf("Please input more than 0 Philosophers."), false);
-	if (argc == 5)
-		state->eat_n = -1;
+		return (printf("Please input more than 0 Philosophers.\n"), false);
 	state->philosophers = malloc(sizeof(t_philosopher) * state->philo_n);
 	state->forks = malloc(sizeof(pthread_mutex_t) * state->philo_n);
-	if (!init_forks(state, i))
-		return (false);
-	state->start = gettimeofday_ms();
-	if (!init_philos(state))
-		return (false);
+	if (!state->philosophers || !state->forks)
+		return (init_fail(state, "Error allocating memory"));
+	if (!init_globals(state))
+		return (init_fail(state, "Error creating mutex"));
+	if (!init_forks(state) || !init_philos(state))
+		return (init_fail(state, "Error creating mutex"));
+	if (!start_threads(state))
+		return (init_fail(state, "Error creating a thread"));
 	return (true);
 }
