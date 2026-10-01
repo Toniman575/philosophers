@@ -6,7 +6,7 @@
 /*   By: asadik <asadik@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/22 13:58:52 by asadik            #+#    #+#             */
-/*   Updated: 2026/10/01 12:26:21 by asadik           ###   ########.fr       */
+/*   Updated: 2026/10/01 12:35:02 by asadik           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,11 @@ static void	eating(t_philosopher *philo)
 	if (philo->state->philo_n > 1)
 		pthread_mutex_lock(philo->right_fork);
 	print(philo, "has taken a fork");
-	print(philo, "is eating");
 	pthread_mutex_lock(&philo->lock);
 	philo->last_meal = gettimeofday_ms();
 	philo->ate_n++;
 	pthread_mutex_unlock(&philo->lock);
+	print(philo, "is eating");
 	ms_sleep(philo->state->tt_eat, philo->state);
 }
 
